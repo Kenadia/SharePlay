@@ -8,32 +8,36 @@
 </body>
 
 <template name="main">
-  <div class="toolbar">
-    <ul class ="pull-left">
-      <li><a href="http://crowdplay.meteor.com"><img src="crowdplay.png" alt="CrowdPlay Home Page" width="150" height="30" border="0" /></a></li>
-    </ul>
-     <ul class= "center-block">
-      <li><span class="glyphicon glyphicon-play"></span></li>
-      <li><span class="glyphicon glyphicon-stop"></span></li>
-      <li><span class="glyphicon glyphicon-fast-forward"></span></li>
-    </ul>
-    <ul class = "pull-right">
-      <li><a href="#">Phone</a></li>
-      <li><a href="#">Controls</a></li>
-      <li><a href="#">Help</a></li>
-    </ul>
-  </div>
-  <div class="toolbar">
-   
 
+  <div id="youtube"></div>
+
+  <div class="toolbar">
+    <div class="container">
+      <div class="toolbar-box">
+        <ul class="logo">
+          <li><a href="/"><img src="crowdplay.png" alt="CrowdPlay Home" /></a></li>
+        </ul>
+        <ul class="controls">
+          {{#if isPlaying}}
+          <li><span class="js-pause glyphicon glyphicon-pause"></span></li>
+          {{/if}}
+          {{#if isPaused}}
+          <li><span class="js-play glyphicon glyphicon-play"></span></li>
+          {{/if}}
+          <li><span class="js-skip glyphicon glyphicon-fast-forward"></span></li>
+        </ul>
+        <ul class="phone-number">
+          <li>Settings</li>
+        </ul>
+      </div>
+    </div>
   </div>
 
   <div class="page">
     <div class="container">
-      <div class="box">
-        <div id="youtube"></div>
-        <div class="query">
-          Query
+      <div class="page-box">
+        <div class="queue-header">
+          Playlist for (267) 404-5550
         </div>
         <ul class="queue">
           {{#each queue}}
@@ -43,4 +47,5 @@
       </div>
     </div>
   </div>
+
 </template>

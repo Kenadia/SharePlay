@@ -1,48 +1,102 @@
-
 html, body {
   height: 100%;
+  font-family: sans-serif;
+  font-weight: bold;
 }
 .page {
   min-height: 100%;
-  background-color: yellow;
-  padding-bottom: 50px;
-  box-sizing: border-box;
+  background: url('concertpic2.jpg') no-repeat fixed center;
   background-size: cover;
-  background: url(concertpic.jpeg) no-repeat fixed center;
-}
-
-.glyphicon {
-    font-size: 20px;
-}
-
-.toolbar {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  background-color: black;
-  color: white;
-  border-radius: 2px;
-}
-
-
-.toolbar li {
-  display: inline;
-}
-  
-.toolbar a {
-  color: #FFFFFF;
-  font-size: 14px;
-  font-weight: bold;
-  padding: 10px;
-  text-transform: uppercase;
-  font-family: sans-serif;
-}
-  
-.box {
-  margin-top: 100px;
-  height: 500px;
-  background-color: white;
+  box-sizing: border-box;
+  padding-bottom: 50px;
 }
 #youtube {
   display: none;
+}
+
+/* TOOLBAR */
+.toolbar {
+  position: fixed;
+  top: 0;
+  background-color: #222;
+  color: white;
+  padding: 0 20px;
+  box-shadow: 0 0px 20px 5px rgba(0, 0, 0, 0.5);
+}
+.toolbar-box {
+  display: table;
+}
+.toolbar,
+.toolbar-box {
+  width: 100%;
+  height: 70px;
+}
+.toolbar li {
+  display: inline;
+  padding: 0;
+}
+.logo,
+.phone-number,
+.controls {
+  display: table-cell;
+  list-style: none;
+  vertical-align: middle;
+  width: 33.3333%;
+}
+.logo {
+  text-align: left;
+}
+.logo img {
+  height: 50px;
+}
+.controls {
+  text-align: center;
+  font-size: 28px;
+}
+.controls li {
+  cursor: pointer;
+  -webkit-transition: color 0.5s ease;
+     -moz-transition: color 0.5s ease;
+       -o-transition: color 0.5s ease;
+          transition: color 0.5s ease;
+}
+.controls li:hover {
+  color: red;
+}
+.phone-number {
+  text-align: right;
+  color: #fff;
+  font-size: 28px;
+}
+
+/* PAGE BOX */
+.page-box {
+  margin-top: 130px;
+  background-color: rgba(255, 255, 255, 0.75);
+  box-shadow: 0px 5px 30px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+}
+.page-box ul {
+  list-style: none;
+  margin: 0;
+}
+.page-box li,
+.queue-header {
+  height: 60px;
+  line-height: 60px;
+  font-size: 24px;
+  padding: 0 20px;
+}
+.queue-header {
+  background-color: #222;
+  color: white;
+  border-radius: 5px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.queue {
+  text-transform: capitalize;
+}
+.queue li:nth-child(2n) {
+  background-color: rgba(200, 200, 200, 0.4);
 }

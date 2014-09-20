@@ -22,22 +22,42 @@ if (Meteor.isClient) {
 
   var currentSong;
   var songQuery = Songs.find({});
+  Session.set('isPlaying', false);
 
   Template.main.queue = function () {
     return songQuery;
   };
 
+  Template.main.isPlaying = function () {
+    return Session.get('isPlaying');
+  };
+
+  Template.main.isPaused = function () {
+    return !Session.get('isPlaying');
+  };
+
+  Template.main.events({
+    'click .js-play': function () {
+      resumeSong();
+    },
+    'click .js-pause': function () {
+      pauseSong();
+    },
+    'click .js-skip': function () {
+      skipSong();
+    }
+  })
+
   songQuery.observeChanges({
     added: function (id, song) {
-      if (currentSong != song.name) {
-        currentSong = song.name;
-        playTopSearchResult(currentSong);
+      if (!currentSong) {
+        playSong();
       }
     }
   });
 
+  // Load IFrame Player API
   Template.main.rendered = function () {
-    // Load IFrame Player API
     var tag = document.createElement('script');
     tag.src = 'https://www.youtube.com/iframe_api';
     var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -54,13 +74,68 @@ if (Meteor.isClient) {
       videoId: '62E1MdaXcco',
       events: {
         // 'onReady': onPlayerReady,
-        // 'onStateChange': onPlayerStateChange
+        'onStateChange': onPlayerStateChange
       }
     });
   }
+
+  // Play the next song when the video ends
+  var onPlayerStateChange = function (e) {
+    if (e.data == 0) {
+      songEnded();
+      playSong();
+    }
+  };
+
+  // Remove the song at the top of the playlist
+  var songEnded = function () {
+    var topSong = Songs.findOne()
+    if (topSong) {
+      Songs.remove(topSong._id);
+      Session.set('isPlaying', false);
+    }
+  };
+
+  // Load and play the song at the top of the playlist
+  var playSong = function () {
+    currentSong = Songs.findOne();
+    if (currentSong) {
+      playTopSearchResult(currentSong.name);
+      Session.set('isPlaying', true);
+    }
+  };
+
+  // Resume the song at the top of the playlist
+  var resumeSong = function () {
+    currentSong = Songs.findOne();
+    if (currentSong) {
+      player.playVideo();
+      Session.set('isPlaying', true);
+    }
+  };
+
+  // Pause the current song
+  var pauseSong = function () {
+    currentSong = Songs.findOne();
+    if (currentSong) {
+      player.pauseVideo();
+      Session.set('isPlaying', false);
+    }
+  };
+
+  // Skip the current song
+  var skipSong = function () {
+    pauseSong();
+    songEnded();
+    playSong();
+  };
   
   var playTopSearchResult = function (keyword) {
-    console.log('play top ' + keyword);
+    if (!player || !player.loadVideoById) {
+      Meteor.setTimeout(function () {
+        playTopSearchResult(keyword);
+      }, 1000);
+    }
     var searchURI = 'http://gdata.youtube.com/feeds/api/videos?q=' +
                     encodeURIComponent(keyword) +
                     '&format=5&max-results=1&v=2&alt=jsonc';
