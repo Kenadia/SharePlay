@@ -99,6 +99,18 @@ html, body {
     font-size: 16px;
 }
 
+/*SEARCH AND DROPDOWN*/
+.search-bar {
+    background-color: rgba(255, 255, 255);
+    border-radius: 5px;
+}
+
+.search-entry {
+    margin-top: 100px;
+    text-align:right;
+    font-size: 15px;
+}
+
 /* PAGE BOX */
 .page-box {
   margin-top: 20px;
