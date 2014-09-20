@@ -65,8 +65,11 @@ if (Meteor.isClient) {
   })
 
   // Start watching for new songs
-  var initializeSongCursor = function () {
-    songQuery = Songs.find({to: Session.get('phoneNumber')});
+  var initializeWithNumber = function (number) {
+    Session.set('phoneNumber', number);
+    window.location.replace('#' + number);
+    console.log('#' + number);
+    songQuery = Songs.find({to: number});
     songQuery.observeChanges({
       added: function (id, song) {
         if (!currentSong) {
@@ -117,8 +120,7 @@ if (Meteor.isClient) {
     // Get a phone number
     Meteor.call('getNumber', function (err, res) {
       if (!err) {
-        Session.set('phoneNumber', res);
-        initializeSongCursor();
+        initializeWithNumber(res);
         removeSpinnerAndShowPage();
       }
     });
