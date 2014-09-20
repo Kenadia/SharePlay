@@ -43,3 +43,6 @@ html, body {
   height: 500px;
   background-color: white;
 }
+#youtube {
+  display: none;
+}
