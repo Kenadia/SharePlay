@@ -80,54 +80,17 @@ html, body {
     color: red;
 }
 
-/* SONG DISPLAY */
-.display-box {
-    align-content: center;
-    padding-left: 6%;
-    padding-right: 6%;  
-}
+/* TUTORIAL */
 
-.playing {
-    text-align:center;
+.tutorial {
     margin-top: 80px;
+    color: black;
     font-size: 18px;
     font-weight: bold;
 }
 
-.song-name {
-    text-align: center;
+.explanation {
+    color: black;
     font-size: 16px;
 }
 
-/* PAGE BOX */
-.page-box {
-  margin-top: 20px;
-  background-color: rgba(255, 255, 255, 0.55); /*changed opacity*/
-  box-shadow: 0px 5px 30px 5px rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
-}
-.page-box ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-.page-box li,
-.queue-header {
-  height: 60px;
-  line-height: 60px;
-  font-size: 24px;
-  padding: 0 20px;
-}
-.queue-header {
-  background-color: #222;
-  color: white;
-  border-radius: 5px;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-}
-.queue {
-  text-transform: capitalize;
-}
-.queue li:nth-child(2n) {
-  background-color: rgba(200, 200, 200, 0.4);
-}

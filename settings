@@ -18,20 +18,22 @@
             <li><span class="js-pause glyphicon glyphicon-pause"></span></li>
             <li><span class="js-skip glyphicon glyphicon-fast-forward"></span></li>
           </ul>
-          <div class="phone-number" onClick="toSettings();">              
+          <ul class="phone-number" onClick="toSettings();">
+            <li>Settings</li>
+          </ul>
         </div>
       </div>
     </div>
-      </div>
+    
     <div class="page">
         
       <div class="container">
           <div class="display-box">
-            <div class="playing">
-                Now Playing
+            <div class="tutorial">
+                How CrowdPlay works
               </div>
-          <div class="song-name">
-              Rainy Day (Featuring Halah Mohammed)
+          <div class="explanation">
+              Distribute phone number among friends, have them text a song name and/or artist to the given number. They can rate which song they want next. Everyone can dj!
           </div>
         </div>
         <div class="page-box">
