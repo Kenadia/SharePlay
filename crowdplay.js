@@ -1,38 +1,4 @@
-// SMS handling
-var handleSms = function (request, response) {
-  var sms = request.body;
-  if (sms.Body) {
-    Songs.insert({
-      name: sms.Body,
-      from: sms.From,
-      to: sms.To
-    });
-    var xml = '<?xml version="1.0" encoding="UTF-8"?><Response><Sms>Thanks for your song request!</Sms></Response>';
-    response.writeHead(200, {'Content-Type': 'text/xml'});
-    response.end(xml);
-  }
-};
-
-// Collections
-Songs = new Mongo.Collection("songs");
-Phones = new Mongo.Collection("phones");
-
-// Routes
-Router.map(function () {
-  this.route('sms', {
-    where: 'server',
-    action: function () {
-      handleSms(this.request, this.response);
-    }
-  });
-});
-
 if (Meteor.isClient) {
-
-  var currentSong;
-  var songQuery;
-  var currentVolume
-  Session.set('isPlaying', false);
 
   Template.main.number = function () {
     return Session.get('phoneNumber');
@@ -43,22 +9,22 @@ if (Meteor.isClient) {
   };
 
   Template.main.isPlaying = function () {
-    return Session.get('isPlaying');
+    return Playlist.isPlaying();
   };
 
   Template.main.isPaused = function () {
-    return !Session.get('isPlaying');
+    return !Playlist.isPlaying();
   };
 
   Template.main.events({
     'click .js-play': function () {
-      resumeSong();
+      Playlist.resume();
     },
     'click .js-pause': function () {
-      pauseSong();
+      Playlist.pause();
     },
     'click .js-skip': function () {
-      skipSong();
+      Playlist.skip();
     },
     'click .js-owner': function () {
       establishOwner();
@@ -75,15 +41,7 @@ if (Meteor.isClient) {
   var initializeWithNumber = function (number) {
     Session.set('phoneNumber', number);
     window.location.replace('#' + number);
-    console.log('#' + number);
-    songQuery = Songs.find({to: number});
-    songQuery.observeChanges({
-      added: function (id, song) {
-        if (!currentSong) {
-          playSong();
-        }
-      }
-    });
+    Playlist.initialize(number);
   }
 
 
@@ -120,10 +78,7 @@ if (Meteor.isClient) {
     };
     
     // Load IFrame Player API
-    var tag = document.createElement('script');
-    tag.src = 'https://www.youtube.com/iframe_api';
-    var firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    Player.loadAPI();
     
     // Get a phone number
     Meteor.call('getNumber', function (err, res) {
@@ -134,108 +89,10 @@ if (Meteor.isClient) {
     });
   };
 
-  // Initialize YouTube player
-  var player;
-  var playerReady = false;
-  onYouTubeIframeAPIReady = function () {
-    player = new YT.Player('youtube', {
-      height: '200',
-      width: '200',
-      videoId: '62E1MdaXcco',
-      events: {
-        // 'onReady': onPlayerReady,
-        'onStateChange': onPlayerStateChange
-      }
-    });
-  }
-
-  // Play the next song when the video ends
-  var onPlayerStateChange = function (e) {
-    if (e.data == 0) {
-      songEnded();
-      playSong();
-    }
-  };
-
-  // Remove the song at the top of the playlist
-  var songEnded = function () {
-    var topSong = songQuery.fetch()[0];
-    if (topSong) {
-      Songs.remove(topSong._id);
-      Session.set('isPlaying', false);
-    }
-  };
-
-  // Load and play the song at the top of the playlist
-  var playSong = function () {
-    currentSong = songQuery.fetch()[0];
-    if (currentSong) {
-      playTopSearchResult(currentSong.name);
-      Session.set('isPlaying', true);
-    }
-  };
-
-  // Resume the song at the top of the playlist
-  var resumeSong = function () {
-    currentSong = songQuery.fetch()[0];
-    if (currentSong) {
-      player.playVideo();
-      Session.set('isPlaying', true);
-    }
-  };
-
-  // Pause the current song
-  var pauseSong = function () {
-    currentSong = songQuery.fetch()[0];
-    if (currentSong) {
-      player.pauseVideo();
-      Session.set('isPlaying', false);
-    }
-  };
-
-  // Skip the current song
-  var skipSong = function () {
-    pauseSong();
-    songEnded();
-    playSong();
-  };
-
-  //Raises the current volume by 10%
-  var volumeUp = function (currentVolume) {
-    player.setVolume(currentVolume += 10);
-  }
-
-  //Decreases the current volume by 10%
-  var volumeDown = function (currentVolume) {
-    player.setVolume(currentVolume -= 10);
-  }
-
   // Set the current owner to the value entered in the field
   var establishOwner = function (owner) {
     Session.set('owner', '+1' + $('.owner-field').val());
   }
-  
-  var playTopSearchResult = function (keyword) {
-    if (!player || !player.loadVideoById) {
-      Meteor.setTimeout(function () {
-        playTopSearchResult(keyword);
-      }, 1000);
-    }
-    var searchURI = 'http://gdata.youtube.com/feeds/api/videos?q=' +
-                    encodeURIComponent(keyword) +
-                    '&format=5&max-results=1&v=2&alt=jsonc';
-    $.ajax({
-      type: "GET",
-      url: searchURI,
-      dataType: "jsonp",
-      success: function(responseData, textStatus, XMLHttpRequest) {
-        if (responseData.data.items) {
-          var video = responseData.data.items[0];
-          player.loadVideoById(video.id, 0, 'small');
-        }
-      }
-    });
-  };
 }
 
 if (Meteor.isServer) {
