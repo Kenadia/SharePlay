@@ -1,11 +1,44 @@
+// SMS handling
+var handleSms = function (request, response) {
+  var sms = request.body;
+  if (sms.Body) {
+    Songs.insert({
+      name: sms.Body,
+      from: sms.From,
+      to: sms.To
+    });
+    var xml = '<?xml version="1.0" encoding="UTF-8"?><Response><Sms>Thanks for your song request!</Sms></Response>';
+    response.writeHead(200, {'Content-Type': 'text/xml'});
+    response.end(xml);
+  }
+};
+
+// Collections
+Songs = new Mongo.Collection("songs");
+Phones = new Mongo.Collection("phones");
+
+// Routes
+Router.map(function () {
+  this.route('sms', {
+    where: 'server',
+    action: function () {
+      handleSms(this.request, this.response);
+    }
+  });
+});
+
 if (Meteor.isClient) {
 
   var currentSong;
-  var songQuery = Songs.find({});
+  var songQuery;
   Session.set('isPlaying', false);
 
+  Template.main.number = function () {
+    return Session.get('phoneNumber');
+  }
+
   Template.main.queue = function () {
-    return songQuery;
+    return Songs.find({to: Session.get('phoneNumber')});
   };
 
   Template.main.isPlaying = function () {
@@ -31,20 +64,64 @@ if (Meteor.isClient) {
     }
   })
 
-  songQuery.observeChanges({
-    added: function (id, song) {
-      if (!currentSong) {
-        playSong();
+  // Start watching for new songs
+  var initializeSongCursor = function () {
+    songQuery = Songs.find({to: Session.get('phoneNumber')});
+    songQuery.observeChanges({
+      added: function (id, song) {
+        if (!currentSong) {
+          playSong();
+        }
       }
-    }
-  });
+    });
+  }
 
-  // Load IFrame Player API
   Template.main.rendered = function () {
+
+    // Spinner
+    $('.page .container').fadeOut(0);
+    $('.page .page-box').removeClass('u-initially-hidden');
+    var opts = {
+      lines: 9, // The number of lines to draw
+      length: 0, // The length of each line
+      width: 12, // The line thickness
+      radius: 11, // The radius of the inner circle
+      corners: 1, // Corner roundness (0..1)
+      rotate: 0, // The rotation offset
+      direction: 1, // 1: clockwise, -1: counterclockwise
+      color: '#000', // #rgb or #rrggbb or array of colors
+      speed: 2, // Rounds per second
+      trail: 31, // Afterglow percentage
+      shadow: false, // Whether to render a shadow
+      hwaccel: false, // Whether to use hardware acceleration
+      className: 'spinner', // The CSS class to assign to the spinner
+      zIndex: 2e9, // The z-index (defaults to 2000000000)
+      top: '50%', // Top position relative to parent
+      left: '50%' // Left position relative to parent
+    };
+    $('.spinner-box').append((new Spinner(opts).spin()).el);
+    var removeSpinnerAndShowPage = function () {
+      $('.spinner').fadeOut(1000);
+      $('.page .container').fadeIn(1000);
+      Meteor.setTimeout(function () {
+        $('.spinner').remove();
+      }, 1500);
+    };
+    
+    // Load IFrame Player API
     var tag = document.createElement('script');
     tag.src = 'https://www.youtube.com/iframe_api';
     var firstScriptTag = document.getElementsByTagName('script')[0];
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    
+    // Get a phone number
+    Meteor.call('getNumber', function (err, res) {
+      if (!err) {
+        Session.set('phoneNumber', res);
+        initializeSongCursor();
+        removeSpinnerAndShowPage();
+      }
+    });
   };
 
   // Initialize YouTube player
@@ -72,7 +149,7 @@ if (Meteor.isClient) {
 
   // Remove the song at the top of the playlist
   var songEnded = function () {
-    var topSong = Songs.findOne()
+    var topSong = songQuery.fetch()[0];
     if (topSong) {
       Songs.remove(topSong._id);
       Session.set('isPlaying', false);
@@ -81,7 +158,7 @@ if (Meteor.isClient) {
 
   // Load and play the song at the top of the playlist
   var playSong = function () {
-    currentSong = Songs.findOne();
+    currentSong = songQuery.fetch()[0];
     if (currentSong) {
       playTopSearchResult(currentSong.name);
       Session.set('isPlaying', true);
@@ -90,7 +167,7 @@ if (Meteor.isClient) {
 
   // Resume the song at the top of the playlist
   var resumeSong = function () {
-    currentSong = Songs.findOne();
+    currentSong = songQuery.fetch()[0];
     if (currentSong) {
       player.playVideo();
       Session.set('isPlaying', true);
@@ -99,7 +176,7 @@ if (Meteor.isClient) {
 
   // Pause the current song
   var pauseSong = function () {
-    currentSong = Songs.findOne();
+    currentSong = songQuery.fetch()[0];
     if (currentSong) {
       player.pauseVideo();
       Session.set('isPlaying', false);
@@ -112,6 +189,11 @@ if (Meteor.isClient) {
     songEnded();
     playSong();
   };
+
+  // Set the current owner to the value entered in the field
+  var establishOwner = function (owner) {
+    Session.set('owner', '+1' + $('.owner-field').val());
+  }
   
   var playTopSearchResult = function (keyword) {
     if (!player || !player.loadVideoById) {
@@ -141,6 +223,7 @@ if (Meteor.isServer) {
 
   Meteor.startup(function () {
     Songs.remove({});
+    Phones.remove({});
     var phones = Assets.getText('phones.txt').split('\n');
     for (i in phones) {
       var phone = phones[i];
@@ -158,7 +241,14 @@ if (Meteor.isServer) {
     // Clears the playlist of the least recently used number, and
     // returns the number.
     getNumber: function () {
-      var phone = Phones.find({}, {sort: {'accessed': -1}}).fetch()[0];
+      var phone = Phones.find({}, {sort: {'accessed': 1}}).fetch()[0];
+      Songs.find({to: phone.number}).map(function (song) {
+        return song._id;
+      }).forEach(function (songId) {
+        Songs.remove(songId);
+      });
+      Phones.update(phone._id, {$set: {accessed: new Date().getTime()}});
+      return phone.number;
     },
 
   });

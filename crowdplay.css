@@ -13,6 +13,13 @@ html, body {
 #youtube {
   display: none;
 }
+.u-initially-hidden {
+  opacity: 0;
+}
+.spinner-box {
+  position: relative;
+  top: 160px;
+}
 
 /* TOOLBAR */
 .toolbar {

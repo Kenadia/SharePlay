@@ -1,6 +1,7 @@
 Feature List
 - Recognizes owner phone number for 'pause', 'play', 'skip', 'play: <song>'
-- Assigned a private number when loading the page
+√ Assigned a private number when loading the page
+- Link others to your playlist and phone number
 - Songs are ranked by votes
 - Search for and add songs (with search suggestions)
 - Scrub songs
