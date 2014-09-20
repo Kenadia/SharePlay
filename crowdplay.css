@@ -5,7 +5,7 @@ html, body {
 }
 .page {
   min-height: 100%;
-  background: url('concertpic2.jpg') no-repeat fixed center;
+  background: url('image/concertpic2.jpg') no-repeat fixed center;
   background-size: cover;
   box-sizing: border-box;
   padding-bottom: 50px;
@@ -78,6 +78,7 @@ html, body {
 }
 .page-box ul {
   list-style: none;
+  padding: 0;
   margin: 0;
 }
 .page-box li,
