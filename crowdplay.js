@@ -1,14 +1,3 @@
-Songs = new Mongo.Collection("songs");
-
-Router.map(function () {
-  this.route('sms', {
-    where: 'server',
-    action: function () {
-      handleSms(this.request, this.response);
-    }
-  });
-});
-
 var handleSms = function (request, response) {
   if (request.body.Body) {
     Songs.insert({name: request.body.Body});
@@ -155,5 +144,27 @@ if (Meteor.isClient) {
 }
 
 if (Meteor.isServer) {
-  Songs.remove({});
+
+  Meteor.startup(function () {
+    Songs.remove({});
+    var phones = Assets.getText('phones.txt').split('\n');
+    for (i in phones) {
+      var phone = phones[i];
+      if (phone) {
+        Phones.insert({
+          number: phone,
+          accessed: new Date().getTime()
+        });
+      }
+    }
+  });
+
+  Meteor.methods({
+
+    // Clears the playlist of the least recently used number, and
+    // returns the number.
+    getNumber: function () {
+    },
+
+  });
 }
