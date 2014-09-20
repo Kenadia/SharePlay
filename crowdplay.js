@@ -31,6 +31,7 @@ if (Meteor.isClient) {
 
   var currentSong;
   var songQuery;
+  var currentVolume
   Session.set('isPlaying', false);
 
   Template.main.number = function () {
@@ -61,6 +62,12 @@ if (Meteor.isClient) {
     },
     'click .js-owner': function () {
       establishOwner();
+    },
+    'click .js-volume-down': function () {
+      volumeDown();
+    },
+    'click .js-volume-up': function () {
+      volumeUp();
     }
   })
 
@@ -78,6 +85,7 @@ if (Meteor.isClient) {
       }
     });
   }
+
 
   Template.main.rendered = function () {
 
@@ -192,6 +200,16 @@ if (Meteor.isClient) {
     playSong();
   };
 
+  //Raises the current volume by 10%
+  var volumeUp = function (currentVolume) {
+    player.setVolume(currentVolume += 10);
+  }
+
+  //Decreases the current volume by 10%
+  var volumeDown = function (currentVolume) {
+    player.setVolume(currentVolume -= 10);
+  }
+
   // Set the current owner to the value entered in the field
   var establishOwner = function (owner) {
     Session.set('owner', '+1' + $('.owner-field').val());
@@ -218,7 +236,6 @@ if (Meteor.isClient) {
       }
     });
   };
-
 }
 
 if (Meteor.isServer) {
