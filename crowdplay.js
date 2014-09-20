@@ -1,7 +1,5 @@
 if (Meteor.isClient) {
 
-  numberArray = new Array(1);
-
   Template.main.number = function () {
     return Session.get('phoneNumber');
   }
@@ -45,7 +43,6 @@ if (Meteor.isClient) {
     window.location.replace('#' + number);
     Playlist.initialize(number);
   }
-
 
   Template.main.rendered = function () {
 
@@ -91,11 +88,12 @@ if (Meteor.isClient) {
     });
   };
 
+  numberArray = [];
   // Set the current owner to the value entered in the field
   var establishOwner = function (owner) {
-    Session.set('owner', '+1' + $('.owner-field').val());
     numberArray.push('+1' + $('.owner-field').val());
   };
+}
 
 if (Meteor.isServer) {
 
