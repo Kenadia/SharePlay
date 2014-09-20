@@ -15,9 +15,20 @@ html, body {
   box-sizing: border-box;
   background-size: cover;
   background: url(concertpic.jpeg) no-repeat fixed center;
-  
-
 }
+
+.toolbar li {
+  display: inline;
+}
+  
+.toolbar a {
+  color: #5a5a5a;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 14px 10px;
+  text-transform: uppercase;
+}
+  
 .box {
   margin-top: 100px;
   height: 500px;
