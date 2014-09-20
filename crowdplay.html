@@ -17,24 +17,12 @@
         <ul class="logo">
           <li><a href="/"><img src="crowdplay.png" alt="CrowdPlay Home" /></a></li>
         </ul>
-        <ul class="controls">
-          {{#if isPlaying}}
-          <li><span class="js-pause glyphicon glyphicon-pause"></span></li>
-          {{/if}}
-          {{#if isPaused}}
-          <li><span class="js-play glyphicon glyphicon-play"></span></li>
-          {{/if}}
-          <li><span class="js-skip glyphicon glyphicon-fast-forward"></span></li>
-          <li><span class="js-volume-down glyphicon glyphicon-volume-down"></span></li>
-          <li><span class="js-volume-up glyphicon glyphicon-volume-up"></span></li>
-        </ul>
         <ul class="phone-number">
           <li>Settings</li>
         </ul>
       </div>
     </div>
   </div>
-
 
   <div class="page">
     <div class="spinner-box"></div>
@@ -52,6 +40,33 @@
           <li>{{name}}</li>
           {{/each}}
         </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="footbar">
+    <div class="play-control"><!--
+   --><div class="backward">
+        <span class="js-previous glyphicon glyphicon-fast-backward"></span>
+      </div><div class="play-pause">
+        {{#if isPlaying}}
+        <div><span class="js-pause glyphicon glyphicon-pause"></span></div>
+        {{/if}}
+        {{#if isPaused}}
+        <div><span class="js-play glyphicon glyphicon-play"></span></div>
+        {{/if}}
+      </div><div class="forward">
+        <span class="js-skip glyphicon glyphicon-fast-forward"></span>
+      </div><!--
+ --></div>
+    <div class="volume-control">
+      <div id="js-volume-slider" class="dragdealer">
+        <div class="handle"></div>
+      </div>
+    </div>
+    <div class="scrub-control">
+      <div id="js-scrub-slider" class="dragdealer">
+        <div class="handle"></div>
       </div>
     </div>
   </div>

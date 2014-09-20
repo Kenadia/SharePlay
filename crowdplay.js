@@ -29,12 +29,6 @@ if (Meteor.isClient) {
     'click .js-owner': function () {
       establishOwner();
     },
-    'click .js-volume-down': function () {
-      volumeDown();
-    },
-    'click .js-volume-up': function () {
-      volumeUp();
-    }
   })
 
   // Start watching for new songs
@@ -75,6 +69,18 @@ if (Meteor.isClient) {
         $('.spinner').remove();
       }, 1500);
     };
+
+    // Sliders
+    new Dragdealer('js-volume-slider', {
+      animationCallback: function (x, y) {
+        Player.setVolume(x * 100);
+      }
+    });
+    new Dragdealer('js-scrub-slider', {
+      callback: function (x, y) {
+        Player.seekToFraction(x);
+      }
+    });
     
     // Load IFrame Player API
     Player.loadAPI();
