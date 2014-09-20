@@ -1,1 +1,21 @@
-/* CSS declarations go here */
+.toolbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background-color: black;
+  color: white;
+}
+html, body {
+  height: 100%;
+}
+.page {
+  min-height: 100%;
+  background-color: yellow;
+  padding-bottom: 50px;
+  box-sizing: border-box;
+}
+.box {
+  margin-top: 100px;
+  height: 500px;
+  background-color: white;
+}
