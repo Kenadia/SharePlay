@@ -94,18 +94,22 @@ if (Meteor.isClient) {
     });
   };
 
-  numberArray = [];
   // Set the current owner to the value entered in the field
   var establishOwner = function (owner) {
-    numberArray.push('+1' + $('.owner-field').val());
+    Users.insert({
+      number: standardizeNumber($('.owner-field').val()),
+      authorizedFor: Session.get('phoneNumber')
+    });
   };
 }
 
 if (Meteor.isServer) {
 
   Meteor.startup(function () {
-    Songs.remove({});
-    Phones.remove({});
+    Songs.remove();
+    Phones.remove();
+    Users.remove();
+    Playlists.remove();
     var phones = Assets.getText('phones.txt').split('\n');
     for (i in phones) {
       var phone = phones[i];
@@ -128,6 +132,11 @@ if (Meteor.isServer) {
         return song._id;
       }).forEach(function (songId) {
         Songs.remove(songId);
+      });
+      Users.find({playlist_id: phone.number}).map(function (user) {
+        return user._id;
+      }).forEach(function (userId) {
+        Users.remove(userId);
       });
       Phones.update(phone._id, {$set: {accessed: new Date().getTime()}});
       return phone.number;
