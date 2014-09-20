@@ -1,10 +1,11 @@
-Feature List
-- Recognizes owner phone number for 'pause', 'play', 'skip', 'play: <song>'
+Prioritized
 √ Assigned a private number when loading the page
-- Link others to your playlist and phone number
-- Songs are ranked by votes
+√ Scrub songs
+√ Volume control
 - Search for and add songs (with search suggestions)
-- Scrub songs
-- Volume control
-- Playlist editing
-- Better text responses
+- Link others to your playlist and phone number
+- Playlist behavior (don't delete old songs, click song to play)
+
+Unprioritized
+- What's playing now?
+- Recognizes owner phone number for 'pause', 'play', 'skip', 'play: <song>'
