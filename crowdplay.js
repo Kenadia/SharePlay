@@ -25,6 +25,9 @@ if (Meteor.isClient) {
     },
     'click .js-skip': function () {
       skipSong();
+    },
+    'click .js-owner': function () {
+      establishOwner();
     }
   })
 
