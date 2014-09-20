@@ -1,12 +1,3 @@
-var handleSms = function (request, response) {
-  if (request.body.Body) {
-    Songs.insert({name: request.body.Body});
-    var xml = '<?xml version="1.0" encoding="UTF-8"?><Response><Sms>Thanks for your song request!</Sms></Response>';
-    response.writeHead(200, {'Content-Type': 'text/xml'});
-    response.end(xml);
-  }
-};
-
 if (Meteor.isClient) {
 
   var currentSong;
@@ -164,6 +155,7 @@ if (Meteor.isServer) {
     // Clears the playlist of the least recently used number, and
     // returns the number.
     getNumber: function () {
+      var phone = Phones.find({}, {sort: {'accessed': -1}}).fetch()[0];
     },
 
   });
