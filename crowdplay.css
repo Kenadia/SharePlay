@@ -1,10 +1,4 @@
-.toolbar {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  background-color: black;
-  color: white;
-}
+
 html, body {
   height: 100%;
 }
@@ -17,16 +11,31 @@ html, body {
   background: url(concertpic.jpeg) no-repeat fixed center;
 }
 
+.glyphicon {
+    font-size: 20px;
+}
+
+.toolbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background-color: black;
+  color: white;
+  border-radius: 2px;
+}
+
+
 .toolbar li {
   display: inline;
 }
   
 .toolbar a {
-  color: #5a5a5a;
-  font-size: 11px;
+  color: #FFFFFF;
+  font-size: 14px;
   font-weight: bold;
-  padding: 14px 10px;
+  padding: 10px;
   text-transform: uppercase;
+  font-family: sans-serif;
 }
   
 .box {
