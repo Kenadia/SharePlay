@@ -42,11 +42,11 @@ html, body {
 .settings {
   display: table-cell;
   vertical-align: middle;
-  width: 33.3333%;
   text-align: right;
 }
 .logostuff {
   text-align: left;
+  padding-left: 12px;
 }
 .logostuff img {
   height: 50px;
