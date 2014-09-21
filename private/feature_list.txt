@@ -2,10 +2,10 @@ Prioritized
 √ Assigned a private number when loading the page
 √ Scrub songs
 √ Volume control
-- Search for and add songs (with search suggestions)
-- Link others to your playlist and phone number
-- Playlist behavior (don't delete old songs, click song to play)
+√ Search for and add songs (with search suggestions)
+√ Link others to your playlist and phone number
+√ Playlist behavior (don't delete old songs, click song to play)
 
 Unprioritized
 - What's playing now?
-- Recognizes owner phone number for 'pause', 'play', 'skip', 'play: <song>'
+√ Recognizes owner phone number for 'pause', 'play', 'skip', 'play: <song>'

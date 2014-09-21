@@ -33,30 +33,22 @@ html, body {
 .toolbar-box {
   display: table;
 }
-.input-group {
-  position: relative;
-}
 .toolbar,
 .toolbar-box {
   width: 100%;
   height: 70px;
 }
-.toolbar li {
-  display: inline;
-  padding: 0;
-}
-.logo,
-.phone-number,
-.controls {
+.logostuff,
+.settings {
   display: table-cell;
-  list-style: none;
   vertical-align: middle;
   width: 33.3333%;
+  text-align: right;
 }
-.logo {
+.logostuff {
   text-align: left;
 }
-.logo img {
+.logostuff img {
   height: 50px;
 }
 .controls {
@@ -86,65 +78,152 @@ html, body {
   box-shadow: 0px 5px 30px 5px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
   position: relative;
+  min-height: 360px;
 }
 .page-box ul {
   list-style: none;
   padding: 0;
   margin: 0;
-
 }
-.page-box li,
+
+/* Song Search */
+.search-field {
+  position: relative;
+  list-style: none;
+  display: inline-block;
+}
+ul.songSuggestions { 
+  position: absolute;
+  min-width: 400px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background-color: #222;
+}
+.songSuggestion {
+  color: white;
+  cursor: pointer;
+}
+.songSuggestion {
+  background-color: #333;
+  border: 2px solid #222;
+  padding: 6px 10px;
+}
+.songSuggestion:not(:last-of-type) {
+  border-bottom: 0;
+}
+.trackTitle {
+}
+.trackArtist {
+  font-weight: normal;
+  color: #999;
+}
+.trackAlbum {
+  display: none;
+}
+/* MOAR SEARCH */
+.search-field .glyphicon {
+  left: 30px;
+  top: 4px;
+  font-size: 16px;
+  color: black;
+}
+.search-field .queryInput {
+  height: 30px;
+  border-radius: 15px;
+  padding-left: 32px;
+  margin: 0;
+}
+.songSuggestions {
+  z-index: 10;
+  left: 15px;
+  box-shadow: 0 0 30px 5px rgba(0, 0, 0, 0.4);
+}
+.songSuggestion {
+  padding: 6px 10px;
+  background: #333;
+  border: 2px solid #222;
+}
+.trackArtist {
+  color: #999;
+}
+
+/* Queue */
+.queue li,
 .queue-header {
   height: 60px;
   line-height: 60px;
-  font-size: 24px;
-  padding: 0 20px;
-  
-  }
-
-ul.cssMenu, ul.cssMenu ul {
-  list-style:none;
-  margin:0; padding:0;
-  position: relative;
-  background-color: rgba(255,255, 255, .8);
+  font-size: 28px;
 }
-
-li a {
-  color: black;
-  text-decoration: none;
-}
-
-li a:hover {
-  text-decoration: none;
-  color: black;
-}
-
-ul.cssMenu ul { 
-  display:none; 
-  position: absolute; 
-}
-
-ul.cssMenu li:hover > ul { 
-  display:block;
-}
-
 .queue-header {
   background-color: #222;
   color: white;
   border-radius: 5px;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
-  
+  padding: 0 20px;
 }
-.input-group {
-  display: table-cell;
+.song-clickable {
+  padding: 0 20px;
+  margin-right: 40px;
+}
+.add-owner {
   position: absolute;
-  
-  padding-left: 0px;
-} 
-
+  top: 1px;
+  right: 16px;
+}
+.add-owner input {
+  width: 110px;
+  height: 36px;
+  line-height: 36px;
+  text-align: center;
+  background: white;
+  border-radius: 15px;
+  font-size: 16px;
+  color: black;
+  padding-left: 12px;
+  font-weight: bold;
+  -webkit-transition: width 0.5s ease;
+     -moz-transition: width 0.5s ease;
+       -o-transition: width 0.5s ease;
+          transition: width 0.5s ease;
+}
+.add-owner .placeholder {
+  position: absolute;
+  right: 12px;
+  top: -2px;
+  color: #555;
+  font-size: 16px;
+  pointer-events: none;
+  -webkit-transition: opacity 0.5s ease;
+     -moz-transition: opacity 0.5s ease;
+       -o-transition: opacity 0.5s ease;
+          transition: opacity 0.5s ease;
+}
+.add-owner input:focus + .placeholder {
+  opacity: 0;
+}
+.add-owner input:focus {
+  width: 200px;
+}
 .queue {
   text-transform: capitalize;
+}
+.queue li {
+  position: relative;
+}
+.queue .delete {
+  position: absolute;
+  color: #f66;
+  top: 0;
+  right: 14px;
+  line-height: 60px;
+  font-size: 24px;
+  opacity: 0;
+  cursor: pointer;
+}
+.queue li:hover .delete {
+  opacity: 1;
 }
 .queue li.selected {
   background-color: blue !important; /* why.. must it be this way :'( */
@@ -220,3 +299,7 @@ ul.cssMenu li:hover > ul {
   left: 0;
   cursor: pointer;
 }
+
+
+/* In progress */
+

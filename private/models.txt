@@ -1,7 +1,9 @@
 models:
   Song:
     name: String
+    from: String
     playlist_id: String
+    add_time: Date
   Phone:
     number: String
     accessed: Date

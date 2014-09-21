@@ -11,48 +11,44 @@
 
   <div id="youtube"></div>
 
-  <div class="toolbar">
-    <div class="container">
-      <div class="toolbar-box">
-        <ul class="logo">
-          <li><a href="/"><img src="crowdplay5.png" alt="CrowdPlay Home" /></a></li>
-        </ul>
-        <ul class="phone-number">
-          <li>Settings</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
   <div class="page">
     <div class="spinner-box"></div>
     <div class="container">
       <div class="page-box u-initially-hidden">
         <div class="queue-header">
           Playlist for {{number}}
+          <div class="add-owner">
+            <input type="text" class="js-owner">
+            <span class="placeholder">Add Owner</span>
+          </div>
         </div>
-          <div class="input-group-btn">
-            <input type="text" class="owner-field">
-            <button class="js-owner input-group-addon btn btn-primary" type="button" name="owner"  value="owner">Set Owner</button>
-          </div>
-          <div class="input-group">
-            <span class="glyphicon glyphicon-search"></span>
-            <input class="queryInput" type="text" name="q" value="">
-          </div>
         <ul class="queue">
           {{#each queue}}
           {{> song}}
           {{/each}}
-          <ul class="cssMenu">
-            <li>
-                <a>menuItem1</a>           
-                <ul>
-                  <li><a>item1</a></li>
-                  <li><a>item2</a></li> 
-                </ul>
-            </li>
-          </ul>
         </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <div class="container">
+      <div class="toolbar-box">
+        <div class="logostuff">
+          <a href="/"><img src="crowdplay.png" alt="CrowdPlay Home" /></a>
+          <div class="search-field">
+            <span class="glyphicon glyphicon-search"></span>
+            <input autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="queryInput" type="text" name="q" value="">
+            <ul class="songSuggestions">
+              {{#each songSuggestions}}
+              {{> songSuggestion}}
+              {{/each}}
+            </ul>
+          </div>
+        </div>
+        <div class="settings">
+          Settings
+        </div>
       </div>
     </div>
   </div>
@@ -87,5 +83,26 @@
 </template>
 
 <template name="song">
-  <li class="{{maybe_selected}}">{{name}}</li>
+  <li class="{{maybe_selected}}">
+    <div class="song-clickable">
+      {{name}}
+    </div>
+    <div class="delete">
+      <span class="glyphicon glyphicon-remove-circle"></span>
+    </div>
+  </li>
+</template>
+
+<template name="songSuggestion">
+  <li class="songSuggestion">
+    <div class="trackTitle">
+      {{title}}
+    </div>
+    <div class="trackArtist">
+      {{artist}}
+    </div>
+    <div class="trackAlbum">
+      {{album}}
+    </div>
+  </li>
 </template>

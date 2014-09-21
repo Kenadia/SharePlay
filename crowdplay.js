@@ -5,7 +5,7 @@ if (Meteor.isClient) {
   }
 
   Template.main.queue = function () {
-    return Songs.find({playlist_id: Session.get('playlistId')});
+    return Songs.find({playlist_id: Session.get('playlistId')}, {sort: {'add_time': 1}});
   };
 
   Template.main.isPlaying = function () {
@@ -16,9 +16,52 @@ if (Meteor.isClient) {
     return !ClientPlaylist.isPlaying();
   };
 
+  Template.main.songSuggestions = function () {
+    var suggestions = Session.get('songSuggestions');
+    if (suggestions) {
+      return suggestions.map(function (data) {
+        return {
+          title: data.display,
+          artist: data.detail,
+          album: data.related.display
+        };
+      });
+    }
+  };
+
+  var clearSongSuggestions = function () {
+    $('.queryInput').val('');
+    Session.set('songSuggestions', null);
+  }
+
+  var resetScrub = function () {
+    $('#js-scrub-slider .handle').css('left', '0');
+  }
+
+  var prevSong = function () {
+    ClientPlaylist.prev();
+    resetScrub();
+  }
+
+  var skipSong = function () {
+    ClientPlaylist.skip();
+    resetScrub();
+  }
+
+  Template.songSuggestion.events({
+    'click': function () {
+      Songs.insert({
+        name: this.title + ' – ' + this.artist,
+        playlist_id: Session.get('playlistId'),
+        add_time: new Date().getTime(),
+      });
+      clearSongSuggestions();
+    }
+  });
+
   Template.main.events({
     'click .js-prev': function () {
-      ClientPlaylist.prev();
+      prevSong();
     },
     'click .js-play': function () {
       ClientPlaylist.resume();
@@ -27,11 +70,24 @@ if (Meteor.isClient) {
       ClientPlaylist.pause();
     },
     'click .js-skip': function () {
-      ClientPlaylist.skip();
+      skipSong();
     },
-    'click .js-owner': function () {
-      addAuthorizedUser();
+    'keypress .js-owner': function (e) {
+      if (e.which === 13) {
+        addAuthorizedUser();
+        $('.add-owner input').blur().val('');
+      }
     },
+    'keypress .queryInput': function (e) {
+      if (e.which === 13) {
+        Songs.insert({
+          name: $('.queryInput').val(),
+          playlist_id: Session.get('playlistId'),
+          add_time: new Date().getTime(),
+        });
+        clearSongSuggestions();
+      }
+    }
   });
 
   Template.song.maybe_selected = function () {
@@ -39,8 +95,17 @@ if (Meteor.isClient) {
   };
 
   Template.song.events({
-    'click': function () {
-      ClientPlaylist.startPlaying(this);
+    'click .delete': function (e) {
+      var songId = Session.get('selectedSong');
+      if (songId == this._id) {
+        skipSong();
+      }
+      Songs.remove(this._id);
+    },
+    'click .song-clickable': function () {
+      if (!Session.equals('selectedSong', this._id)) {
+        ClientPlaylist.startPlaying(this);
+      }
     }
   });
 
@@ -77,44 +142,116 @@ if (Meteor.isClient) {
     };
 
     // Sliders
+    var scrubbing = false;
+    new Dragdealer('js-scrub-slider', {
+      animationCallback: function (x, y) {
+        scrubbing = true;
+      },
+      callback: function (x, y) {
+        Player.seekToFraction(x);
+        scrubbing = false;
+      },
+      slide: false
+    });
     new Dragdealer('js-volume-slider', {
       animationCallback: function (x, y) {
         Player.setVolume(x * 100);
       },
-      slide: false
-    });
-    new Dragdealer('js-scrub-slider', {
-      callback: function (x, y) {
-        Player.seekToFraction(x);
-      },
-      slide: false
+      slide: false,
+      x: 1
     });
     
     // Load IFrame Player API
     Player.loadAPI();
     
     // Get a new playlist object
-    Meteor.call('newPlaylist', function (err, playlist_id) {
-      if (!err) {
-        Session.set('playlistId', playlist_id);
-        ClientPlaylist.initialize(playlist_id);
-        removeSpinnerAndShowPage();
-        var phoneNumber = Phones.findOne({playlist_id: playlist_id}).number;
-        window.location.replace('#' + phoneNumber);
-        Session.set('phoneNumber', phoneNumber);
-        Songs.find({playlist_id: playlist_id}).observeChanges({
-          added: function (id, song) {
-            ClientPlaylist.songAdded();
+    var initializeWithPlaylistId = function (playlist_id) {
+      Session.set('playlistId', playlist_id);
+      ClientPlaylist.initialize(playlist_id);
+      removeSpinnerAndShowPage();
+      var phoneNumber = Phones.findOne({playlist_id: playlist_id}).number;
+      window.location.replace('#' + phoneNumber);
+      Session.set('phoneNumber', phoneNumber);
+      Songs.find({playlist_id: playlist_id}).observeChanges({
+        added: function (id, song) {
+          if (song.privileged) {
+            var songQuery = Songs.find({playlist_id: Session.get('playlistId')}, {sort: {'add_time': 1}});
+            var earliestTime = songQuery.fetch()[0].add_time;
+            Songs.update(id, {$set: {add_time: earliestTime - 1}});
+          }
+          ClientPlaylist.songAdded(song.privileged);
+        }
+      });
+      Playlists.find({_id: playlist_id}).observeChanges({
+        changed: function (id, changes) {
+          if (changes.action) {
+            switch (changes.action) {
+              case 'pause':
+                ClientPlaylist.pause();
+                break;
+              case 'play':
+                ClientPlaylist.resume();
+                break;
+              case 'skip':
+                skipSong();
+                break;
+            }
+            Playlists.update(id, {$unset: {action: ''}});
+          }
+        }
+      });
+    };
+    var initialized = false;
+    var tryToInitialize = function () {
+      var hash = window.location.hash;
+      if (hash) {
+        var phone = Phones.findOne({number: hash.slice(1)});
+        if (phone) {
+          var playlist = Playlists.findOne({phone_id: phone._id});
+          if (playlist) {
+            Phones.update(phone._id, {$set: {
+              accessed: new Date().getTime(),
+            }});
+            initializeWithPlaylistId(playlist._id);
+            initialized = true;
+          }
+        }
+      }
+      if (!initialized) {
+        Meteor.call('newPlaylist', function (err, playlist_id) {
+          if (!err) {
+            initializeWithPlaylistId(playlist_id);
           }
         });
       }
-    });
+    };
+    if (window.location.hash) {
+      var waitForPhonesToInitialize = function () {
+        if (Phones.find().count()) {
+          tryToInitialize();
+        } else {
+          Meteor.setTimeout(waitForPhonesToInitialize, 200);
+        }
+      };
+      waitForPhonesToInitialize();
+    } else {
+      tryToInitialize();
+    }
 
-    $('.queryInput').keyup( $.debounce( 250, sendQuery ) );
+    $('.queryInput')
+      .keyup( $.debounce( 500, sendQuery ) )
+      .focus(function () {
+        $('.songSuggestions').fadeIn(400);
+      })
+      .blur(function () {
+        $('.songSuggestions').fadeOut(400);
+      });
+
+
     // Repeating playhead update
     var updatePlayhead = function () {
       var fraction = Player.getCurrentFraction();
-      if (fraction) {
+      if (fraction && !scrubbing) {
         var newLeft = fraction * $('#js-scrub-slider').width();
         $('#js-scrub-slider .handle').css('left', '' + newLeft + 'px');
       }
@@ -124,9 +261,9 @@ if (Meteor.isClient) {
   };
 
   // Set the current owner to the value entered in the field
-  var addAuthorizedUser = function (owner) {
+  var addAuthorizedUser = function () {
     Users.insert({
-      number: standardizeNumber($('.owner-field').val()),
+      number: standardizeNumber($('.add-owner input').val()),
       playlist_id: Session.get('playlistId')
     });
   };
@@ -167,6 +304,7 @@ if (Meteor.isServer) {
         accessed: new Date().getTime(),
         playlist_id: playlistId
       }});
+      console.log("new playlist server: " + Phones.find().count());
       return playlistId;
     },
 
