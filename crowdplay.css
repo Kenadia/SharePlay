@@ -5,10 +5,10 @@ html, body {
 }
 .page {
   min-height: 100%;
-  background: url('concertpic2.jpg') no-repeat fixed center;
+  background: url('concertpic8.jpg') no-repeat fixed center;
   background-size: cover;
   box-sizing: border-box;
-  padding-bottom: 50px;
+  padding-bottom: 80px;
 }
 #youtube {
   display: none;
@@ -41,7 +41,7 @@ html, body {
 .toolbar input {
   height: 30px;
   border-radius: 15px;
-  padding-left: 32px;
+  padding: 0 32px;
   margin: 0;
 }
 .logostuff,
@@ -221,6 +221,7 @@ html, body {
 }
 .queue li {
   position: relative;
+  cursor: pointer;
 }
 .queue .delete {
   position: absolute;
@@ -264,6 +265,9 @@ html, body {
 .play-control > div {
   display: inline-block;
   vertical-align: middle;
+}
+.play-control .glyphicon {
+  cursor: pointer;
 }
 .backward {
   width: 30px;
