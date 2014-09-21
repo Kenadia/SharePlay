@@ -33,6 +33,9 @@ html, body {
 .toolbar-box {
   display: table;
 }
+.input-group {
+  position: relative;
+}
 .toolbar,
 .toolbar-box {
   width: 100%;
@@ -89,7 +92,6 @@ html, body {
   padding: 0;
   margin: 0;
 
-
 }
 .page-box li,
 .queue-header {
@@ -99,6 +101,33 @@ html, body {
   padding: 0 20px;
   
   }
+
+ul.cssMenu, ul.cssMenu ul {
+  list-style:none;
+  margin:0; padding:0;
+  position: relative;
+  background-color: rgba(255,255, 255, .8);
+}
+
+li a {
+  color: black;
+  text-decoration: none;
+}
+
+li a:hover {
+  text-decoration: none;
+  color: black;
+}
+
+ul.cssMenu ul { 
+  display:none; 
+  position: absolute; 
+}
+
+ul.cssMenu li:hover > ul { 
+  display:block;
+}
+
 .queue-header {
   background-color: #222;
   color: white;
@@ -110,9 +139,10 @@ html, body {
 .input-group {
   display: table-cell;
   position: absolute;
-  padding-right: 0px;
-  padding-left: 500px;
+  
+  padding-left: 0px;
 } 
+
 .queue {
   text-transform: capitalize;
 }

@@ -1,6 +1,9 @@
 <head>
   <title>crowdplay</title>
   <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="//code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
+  <script src="Search.js"></script>
 </head>
 
 <body>
@@ -31,14 +34,27 @@
         <div class="queue-header">
           Playlist for {{number}}
         </div>
-          <div class="input-group">
+          <div class="input-group-btn">
             <input type="text" class="owner-field">
-            <button type="button" name="owner" class="js-owner input-group-addon btn btn-primary" value="owner">Set Owner</button>
+            <button class="js-owner input-group-addon btn btn-primary" type="button" name="owner"  value="owner">Set Owner</button>
+          </div>
+          <div class="input-group">
+            <span class="glyphicon glyphicon-search"></span>
+            <input class="queryInput" type="text" name="q" value="">
           </div>
         <ul class="queue">
           {{#each queue}}
           <li>{{name}}</li>
           {{/each}}
+          <ul class="cssMenu">
+            <li>
+                <a>menuItem1</a>           
+                <ul>
+                  <li><a>item1</a></li>
+                  <li><a>item2</a></li> 
+                </ul>
+            </li>
+          </ul>
         </ul>
       </div>
     </div>

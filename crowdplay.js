@@ -29,14 +29,17 @@ if (Meteor.isClient) {
     'click .js-owner': function () {
       establishOwner();
     },
-  })
+    'click .js-owner': function () {
+      establishOwner();
+    },
+  });
 
   // Start watching for new songs
   var initializeWithNumber = function (number) {
     Session.set('phoneNumber', number);
     window.location.replace('#' + number);
     Playlist.initialize(number);
-  }
+  };
 
   Template.main.rendered = function () {
 
@@ -92,6 +95,8 @@ if (Meteor.isClient) {
         removeSpinnerAndShowPage();
       }
     });
+
+    $('.queryInput').keyup( $.debounce( 250, sendQuery ) );
   };
 
   // Set the current owner to the value entered in the field
