@@ -146,7 +146,10 @@ if (Meteor.isClient) {
     };
 
     // Sliders
-    var scrubbing = false;
+    var scrubbing;
+    Meteor.setTimeout(function () {
+      scrubbing = false;
+    });
     new Dragdealer('js-scrub-slider', {
       animationCallback: function (x, y) {
         scrubbing = true;
