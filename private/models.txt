@@ -1,0 +1,13 @@
+models:
+  Song:
+    name: String
+    playlist_id: String
+  Phone:
+    number: String
+    accessed: Date
+    playlist_id: String
+  User:
+    number: String
+    playlist_id: String
+  Playlist:
+    phone_id: String
