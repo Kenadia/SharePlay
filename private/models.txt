@@ -13,3 +13,6 @@ models:
     playlist_id: String
   Playlist:
     phone_id: String
+
+specific blue: 23afc4
+specific orange: f69a2e
