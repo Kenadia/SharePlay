@@ -146,6 +146,10 @@ ul.cssMenu li:hover > ul {
 .queue {
   text-transform: capitalize;
 }
+.queue li.selected {
+  background-color: blue !important; /* why.. must it be this way :'( */
+  color: white;
+}
 .queue li:nth-child(2n) {
   background-color: rgba(200, 200, 200, 0.4);
 }

@@ -41,7 +41,7 @@
           </div>
         <ul class="queue">
           {{#each queue}}
-          <li>{{name}}</li>
+          {{> song}}
           {{/each}}
           <ul class="cssMenu">
             <li>
@@ -60,7 +60,7 @@
   <div class="footbar">
     <div class="play-control"><!--
    --><div class="backward">
-        <span class="js-previous glyphicon glyphicon-fast-backward"></span>
+        <span class="js-prev glyphicon glyphicon-fast-backward"></span>
       </div><div class="play-pause">
         {{#if isPlaying}}
         <div><span class="js-pause glyphicon glyphicon-pause"></span></div>
@@ -84,4 +84,8 @@
     </div>
   </div>
 
+</template>
+
+<template name="song">
+  <li class="{{maybe_selected}}">{{name}}</li>
 </template>

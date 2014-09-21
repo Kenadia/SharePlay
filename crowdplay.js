@@ -5,41 +5,44 @@ if (Meteor.isClient) {
   }
 
   Template.main.queue = function () {
-    return Songs.find({to: Session.get('phoneNumber')});
+    return Songs.find({playlist_id: Session.get('playlistId')});
   };
 
   Template.main.isPlaying = function () {
-    return Playlist.isPlaying();
+    return ClientPlaylist.isPlaying();
   };
 
   Template.main.isPaused = function () {
-    return !Playlist.isPlaying();
+    return !ClientPlaylist.isPlaying();
   };
 
   Template.main.events({
+    'click .js-prev': function () {
+      ClientPlaylist.prev();
+    },
     'click .js-play': function () {
-      Playlist.resume();
+      ClientPlaylist.resume();
     },
     'click .js-pause': function () {
-      Playlist.pause();
+      ClientPlaylist.pause();
     },
     'click .js-skip': function () {
-      Playlist.skip();
+      ClientPlaylist.skip();
     },
     'click .js-owner': function () {
-      establishOwner();
-    },
-    'click .js-owner': function () {
-      establishOwner();
+      addAuthorizedUser();
     },
   });
 
-  // Start watching for new songs
-  var initializeWithNumber = function (number) {
-    Session.set('phoneNumber', number);
-    window.location.replace('#' + number);
-    Playlist.initialize(number);
+  Template.song.maybe_selected = function () {
+    return Session.equals('selectedSong', this._id) ? 'selected' : '';
   };
+
+  Template.song.events({
+    'click': function () {
+      ClientPlaylist.startPlaying(this);
+    }
+  });
 
   Template.main.rendered = function () {
 
@@ -77,33 +80,54 @@ if (Meteor.isClient) {
     new Dragdealer('js-volume-slider', {
       animationCallback: function (x, y) {
         Player.setVolume(x * 100);
-      }
+      },
+      slide: false
     });
     new Dragdealer('js-scrub-slider', {
       callback: function (x, y) {
         Player.seekToFraction(x);
-      }
+      },
+      slide: false
     });
     
     // Load IFrame Player API
     Player.loadAPI();
     
-    // Get a phone number
-    Meteor.call('getNumber', function (err, res) {
+    // Get a new playlist object
+    Meteor.call('newPlaylist', function (err, playlist_id) {
       if (!err) {
-        initializeWithNumber(res);
+        Session.set('playlistId', playlist_id);
+        ClientPlaylist.initialize(playlist_id);
         removeSpinnerAndShowPage();
+        var phoneNumber = Phones.findOne({playlist_id: playlist_id}).number;
+        window.location.replace('#' + phoneNumber);
+        Session.set('phoneNumber', phoneNumber);
+        Songs.find({playlist_id: playlist_id}).observeChanges({
+          added: function (id, song) {
+            ClientPlaylist.songAdded();
+          }
+        });
       }
     });
 
     $('.queryInput').keyup( $.debounce( 250, sendQuery ) );
+    // Repeating playhead update
+    var updatePlayhead = function () {
+      var fraction = Player.getCurrentFraction();
+      if (fraction) {
+        var newLeft = fraction * $('#js-scrub-slider').width();
+        $('#js-scrub-slider .handle').css('left', '' + newLeft + 'px');
+      }
+      Meteor.setTimeout(updatePlayhead, 500);
+    };
+    updatePlayhead();
   };
 
   // Set the current owner to the value entered in the field
-  var establishOwner = function (owner) {
+  var addAuthorizedUser = function (owner) {
     Users.insert({
       number: standardizeNumber($('.owner-field').val()),
-      authorizedFor: Session.get('phoneNumber')
+      playlist_id: Session.get('playlistId')
     });
   };
 }
@@ -111,10 +135,10 @@ if (Meteor.isClient) {
 if (Meteor.isServer) {
 
   Meteor.startup(function () {
-    Songs.remove();
-    Phones.remove();
-    Users.remove();
-    Playlists.remove();
+    Songs.remove({});
+    Phones.remove({});
+    Users.remove({});
+    Playlists.remove({});
     var phones = Assets.getText('phones.txt').split('\n');
     for (i in phones) {
       var phone = phones[i];
@@ -131,20 +155,19 @@ if (Meteor.isServer) {
 
     // Clears the playlist of the least recently used number, and
     // returns the number.
-    getNumber: function () {
+    newPlaylist: function () {
       var phone = Phones.find({}, {sort: {'accessed': 1}}).fetch()[0];
-      Songs.find({to: phone.number}).map(function (song) {
-        return song._id;
-      }).forEach(function (songId) {
-        Songs.remove(songId);
-      });
-      Users.find({playlist_id: phone.number}).map(function (user) {
-        return user._id;
-      }).forEach(function (userId) {
-        Users.remove(userId);
-      });
-      Phones.update(phone._id, {$set: {accessed: new Date().getTime()}});
-      return phone.number;
+      var overwrittenPlaylist = Playlists.findOne({phone_id: phone._id});
+      if (overwrittenPlaylist) {
+        Songs.remove({playlist_id: overwrittenPlaylist._id});
+        Users.remove({playlist_id: overwrittenPlaylist._id});
+      }
+      var playlistId = Playlists.insert({phone_id: phone._id});
+      Phones.update(phone._id, {$set: {
+        accessed: new Date().getTime(),
+        playlist_id: playlistId
+      }});
+      return playlistId;
     },
 
   });
