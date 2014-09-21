@@ -18,7 +18,7 @@ html, body {
 }
 .spinner-box {
   position: relative;
-  top: 160px;
+  top: 340px;
 }
 
 /* TOOLBAR */
@@ -129,7 +129,7 @@ html, body {
 }
 .theNumber {
   display: inline-block;
-  min-width: 200px;
+  min-width: 205px;
   font-size: 28px;
 }
 .add-owner {
@@ -189,7 +189,7 @@ html, body {
 /* PAGE BOX */
 .page-box {
   margin-top: 176px;
-  background-color: rgba(255, 255, 255, 0.75);
+  background-color: rgba(255, 255, 255, 0.70);
   box-shadow: 0px 5px 30px 5px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
   position: relative;
@@ -199,6 +199,13 @@ html, body {
   list-style: none;
   padding: 0;
   margin: 0;
+}
+.help-text {
+  text-align: center;
+  font-size: 42px;
+  padding-top: 79px;
+  color: white;
+  text-shadow: 0 0 20px #777;
 }
 
 /* Queue */
@@ -293,6 +300,16 @@ html, body {
   height: 3px;
   border-radius: 2px;
   background: #555;
+}
+.footbar .dragdealer .filled {
+  position: absolute;
+  width: 0;
+  height: 3px;
+  border-radius: 2px;
+  background: #eee;
+}
+.footbar .scrub-control .dragdealer .filled {
+  background: #239fc4;
 }
 .footbar .dragdealer .handle {
   width: 14px;

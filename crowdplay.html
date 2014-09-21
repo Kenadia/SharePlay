@@ -16,11 +16,16 @@
     <div class="container">
       <div class="now-playing">
         <div class="now-playing-label">
+          {{#if nowPlaying}}
           Now Playing
+          {{/if}}
         </div>
       {{nowPlaying.name}}
       </div>
       <div class="page-box u-initially-hidden">
+        <div class="help-text">
+          Your playlist is empty!<br />Text {{number}} or search for<br />songs above to get started.
+        </div>
         <ul class="queue">
           {{#each queue}}
           {{> song}}
@@ -75,11 +80,13 @@
  --></div>
     <div class="volume-control">
       <div id="js-volume-slider" class="dragdealer">
+        <div class="filled"></div>
         <div class="handle"></div>
       </div>
     </div>
     <div class="scrub-control">
       <div id="js-scrub-slider" class="dragdealer">
+        <div class="filled"></div>
         <div class="handle"></div>
       </div>
     </div>

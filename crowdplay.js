@@ -153,6 +153,7 @@ if (Meteor.isClient) {
     new Dragdealer('js-scrub-slider', {
       animationCallback: function (x, y) {
         scrubbing = true;
+        $('#js-scrub-slider .filled').css('width', '' + (x * 100) + '%');
       },
       callback: function (x, y) {
         Player.seekToFraction(x);
@@ -163,6 +164,7 @@ if (Meteor.isClient) {
     new Dragdealer('js-volume-slider', {
       animationCallback: function (x, y) {
         Player.setVolume(x * 100);
+        $('#js-volume-slider .filled').css('width', '' + (x * 100) + '%');
       },
       slide: false,
       x: 1
@@ -181,6 +183,7 @@ if (Meteor.isClient) {
       Session.set('phoneNumber', phoneNumber);
       Songs.find({playlist_id: playlist_id}).observeChanges({
         added: function (id, song) {
+          $('.help-text').hide();
           if (song.privileged) {
             var songQuery = Songs.find({playlist_id: Session.get('playlistId')}, {sort: {'add_time': 1}});
             var earliestTime = songQuery.fetch()[0].add_time;
