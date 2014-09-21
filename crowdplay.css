@@ -25,9 +25,9 @@ html, body {
 .toolbar {
   position: fixed;
   top: 0;
+  padding: 0 20px;
   background-color: #222;
   color: white;
-  padding: 0 20px;
   box-shadow: 0 0px 20px 5px rgba(0, 0, 0, 0.5);
 }
 .toolbar-box {
@@ -38,12 +38,19 @@ html, body {
   width: 100%;
   height: 70px;
 }
+.toolbar input {
+  height: 30px;
+  border-radius: 15px;
+  padding-left: 32px;
+  margin: 0;
+}
 .logostuff,
-.settings {
+.phoneNumber {
   display: table-cell;
   vertical-align: middle;
-  text-align: right;
 }
+
+/* LOGO AREA */
 .logostuff {
   text-align: left;
   padding-left: 12px;
@@ -71,34 +78,28 @@ html, body {
   font-size: 28px;
 }
 
-/* PAGE BOX */
-.page-box {
-  margin-top: 130px;
-  background-color: rgba(255, 255, 255, 0.75);
-  box-shadow: 0px 5px 30px 5px rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
-  position: relative;
-  min-height: 360px;
-}
-.page-box ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
 /* Song Search */
 .search-field {
   position: relative;
   list-style: none;
   display: inline-block;
 }
-ul.songSuggestions { 
+.search-field .glyphicon {
+  left: 31px;
+  top: 4px;
+  font-size: 16px;
+  color: black;
+}
+.songSuggestions { 
   position: absolute;
+  z-index: 10;
+  left: 15px;
   min-width: 400px;
-  list-style: none;
   margin: 0;
   padding: 0;
+  list-style: none;
   background-color: #222;
+  box-shadow: 0 0 30px 5px rgba(0, 0, 0, 0.4);
 }
 .songSuggestion {
   color: white;
@@ -121,31 +122,61 @@ ul.songSuggestions {
 .trackAlbum {
   display: none;
 }
-/* MOAR SEARCH */
-.search-field .glyphicon {
-  left: 30px;
-  top: 4px;
+
+/* ADD OWNER AND PHONE NUMBER */
+.phoneNumber {
+  text-align: right;
+}
+.theNumber {
+  display: inline-block;
+  min-width: 200px;
+  font-size: 28px;
+}
+.add-owner {
+  display: inline-block;
+  position: relative;
+  top: -6px;
+}
+.add-owner input {
+  width: 110px;
+  text-align: center;
+  -webkit-transition: width 0.5s ease;
+     -moz-transition: width 0.5s ease;
+       -o-transition: width 0.5s ease;
+          transition: width 0.5s ease;
+}
+.add-owner .placeholder {
+  position: absolute;
+  color: #555;
   font-size: 16px;
-  color: black;
+  top: 3px;
+  right: 12px;
+  pointer-events: none;
+  -webkit-transition: opacity 0.5s ease;
+     -moz-transition: opacity 0.5s ease;
+       -o-transition: opacity 0.5s ease;
+          transition: opacity 0.5s ease;
 }
-.search-field .queryInput {
-  height: 30px;
-  border-radius: 15px;
-  padding-left: 32px;
+.add-owner input:focus + .placeholder {
+  opacity: 0;
+}
+.add-owner input:focus {
+  width: 200px;
+}
+
+/* PAGE BOX */
+.page-box {
+  margin-top: 130px;
+  background-color: rgba(255, 255, 255, 0.75);
+  box-shadow: 0px 5px 30px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  position: relative;
+  min-height: 360px;
+}
+.page-box ul {
+  list-style: none;
+  padding: 0;
   margin: 0;
-}
-.songSuggestions {
-  z-index: 10;
-  left: 15px;
-  box-shadow: 0 0 30px 5px rgba(0, 0, 0, 0.4);
-}
-.songSuggestion {
-  padding: 6px 10px;
-  background: #333;
-  border: 2px solid #222;
-}
-.trackArtist {
-  color: #999;
 }
 
 /* Queue */
@@ -166,45 +197,6 @@ ul.songSuggestions {
 .song-clickable {
   padding: 0 20px;
   margin-right: 40px;
-}
-.add-owner {
-  position: absolute;
-  top: 1px;
-  right: 16px;
-}
-.add-owner input {
-  width: 110px;
-  height: 36px;
-  line-height: 36px;
-  text-align: center;
-  background: white;
-  border-radius: 15px;
-  font-size: 16px;
-  color: black;
-  padding-left: 12px;
-  font-weight: bold;
-  -webkit-transition: width 0.5s ease;
-     -moz-transition: width 0.5s ease;
-       -o-transition: width 0.5s ease;
-          transition: width 0.5s ease;
-}
-.add-owner .placeholder {
-  position: absolute;
-  right: 12px;
-  top: -2px;
-  color: #555;
-  font-size: 16px;
-  pointer-events: none;
-  -webkit-transition: opacity 0.5s ease;
-     -moz-transition: opacity 0.5s ease;
-       -o-transition: opacity 0.5s ease;
-          transition: opacity 0.5s ease;
-}
-.add-owner input:focus + .placeholder {
-  opacity: 0;
-}
-.add-owner input:focus {
-  width: 200px;
 }
 .queue {
   text-transform: capitalize;
@@ -288,7 +280,6 @@ ul.songSuggestions {
   background: white;
 }
 
-
 /* Dragdealer defaults */
 .dragdealer {
   position: relative;
@@ -300,6 +291,21 @@ ul.songSuggestions {
   cursor: pointer;
 }
 
-
-/* In progress */
-
+/* Makeover */
+.toolbar {
+  background-color: #39f;
+}
+.settings {
+  display: none;
+}
+.queue-header {
+  background-color: #333;
+}
+.queue li.selected {
+  background-color: white !important;
+  color: #39f !important;
+}
+.footbar {
+  border-color: #595959;
+  background-color: #2a2a2a;
+}
