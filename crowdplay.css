@@ -201,6 +201,7 @@ html, body {
   margin: 0;
 }
 .help-text {
+  display: none;
   text-align: center;
   font-size: 42px;
   padding-top: 79px;
@@ -276,6 +277,9 @@ html, body {
 .play-control .glyphicon {
   cursor: pointer;
 }
+.play-control .glyphicon:hover {
+  color: rgb(230, 144, 56);
+}
 .backward {
   width: 30px;
   text-align: right;
@@ -347,4 +351,15 @@ html, body {
 .footbar {
   border-color: #595959;
   background-color: #2a2a2a;
+}
+
+
+.isBeingListenedTo {
+  position: relative;
+  top: -60px;
+  left: -50px;
+  width: 32px;
+}
+.isBeingListenedTo.selected {
+  display: none;
 }

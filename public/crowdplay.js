@@ -224,6 +224,9 @@ if (Meteor.isClient) {
             Phones.update(phone._id, {$set: {
               accessed: new Date().getTime(),
             }});
+            if (Songs.find({playlist_id: Session.get('playlistId')}).count() == 0) {
+              $('.help-text').show();
+            }
             initializeWithPlaylistId(playlist._id);
             initialized = true;
           }

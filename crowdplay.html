@@ -102,6 +102,11 @@
     <div class="delete">
       <span class="glyphicon glyphicon-remove-circle"></span>
     </div>
+    {{#if isBeingListenedTo}}
+    <div class="isBeingListenedTo {{maybe_selected}}">
+      <img src="headphones2.png" alt="">
+    </div>
+    {{/if}}
   </li>
 </template>
 
