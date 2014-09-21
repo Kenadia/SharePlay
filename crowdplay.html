@@ -14,6 +14,12 @@
   <div class="page">
     <div class="spinner-box"></div>
     <div class="container">
+      <div class="now-playing">
+        <div class="now-playing-label">
+          Now Playing
+        </div>
+      {{nowPlaying.name}}
+      </div>
       <div class="page-box u-initially-hidden">
         <ul class="queue">
           {{#each queue}}
@@ -41,8 +47,8 @@
         </div>
         <div class="phoneNumber">
           <div class="add-owner">
-            <span class="placeholder">Add Owner</span>
             <input type="text" class="js-owner">
+            <span class="placeholder">Add Owner</span>
           </div>
           <div class="theNumber">
             {{number}}

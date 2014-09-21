@@ -8,6 +8,10 @@ if (Meteor.isClient) {
     return Songs.find({playlist_id: Session.get('playlistId')}, {sort: {'add_time': 1}});
   };
 
+  Template.main.nowPlaying = function () {
+    return Songs.findOne(Session.get('selectedSong'));
+  }
+
   Template.main.isPlaying = function () {
     return ClientPlaylist.isPlaying();
   };
@@ -304,7 +308,6 @@ if (Meteor.isServer) {
         accessed: new Date().getTime(),
         playlist_id: playlistId
       }});
-      console.log("new playlist server: " + Phones.find().count());
       return playlistId;
     },
 
